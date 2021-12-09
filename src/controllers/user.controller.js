@@ -11,13 +11,17 @@ router.post("/",
     body("age").custom((value) => {
         if(value < 1 || value > 100) {
             throw new Error("Age should be between 1 and 100")
-        } else return true;
+        } else {
+            return true;
+        }
     }),
     body("gender").custom((value) => {
         const genderRoles = ["Male", "Female", "Others"];
         if(!genderRoles.includes(value)) {
             throw new Error("Please enter a valid gender")
-        } else return true;
+        } else {
+            return true;
+        }
     }),
     async (req, res) => {
         const errors = validationResult(req);
@@ -27,18 +31,17 @@ router.post("/",
                     [param]: msg,
                 }
             })
-
             return res.status(400).json({ errors: newErrors })
         }
-
-
-        try{
-            const user = await userModel.create(req.body);
-            console.log("new user", user);
-    
-            return res.status(200).send(user);
-        } catch(e) {
-            return res.status(500).send({ message: e.message, status: "failed" })
+        else{
+            try{
+                const user = await userModel.create(req.body);
+                console.log("new user", user);
+        
+                return res.status(200).send(user);
+            } catch(e) {
+                return res.status(500).send({ message: e.message, status: "failed" })
+            }
         }
     }
  )
